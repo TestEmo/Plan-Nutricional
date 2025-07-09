@@ -19,15 +19,15 @@ services:
         # --- Habilitar Traefik y configurar el Router ---
         - "traefik.enable=true"
         - "traefik.docker.network=frontend"
-        - "traefik.http.routers.plan-nutricional.rule=Host(`plansalud.emopruebas.space`)"
-        - "traefik.http.routers.plan-nutricional.entrypoints=websecure"
+        - "traefik.http.routers.app-plan-nutricional.rule=Host(`plansalud.emopruebas.space`)"
+        - "traefik.http.routers.app-plan-nutricional.entrypoints=websecure"
         
         # --- Configuración de TLS/SSL ---
-        - "traefik.http.routers.plan-nutricional.tls=true"
-        - "traefik.http.routers.plan-nutricional.tls.certresolver=le"
+        - "traefik.http.routers.app-plan-nutricional.tls=true"
+        - "traefik.http.routers.app-plan-nutricional.tls.certresolver=le"
 
         # --- Configuración del Servicio ---
-        - "traefik.http.services.plan-nutricional.loadbalancer.server.port=80"
+        - "traefik.http.services.app-plan-nutricional.loadbalancer.server.port=80"
         # ¡IMPORTANTE! Cambia '80' por el puerto que tu aplicación realmente utiliza.
 
 
