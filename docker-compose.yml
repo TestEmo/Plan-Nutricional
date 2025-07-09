@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   app-plan-nutricional:
-    build: .
+    build:
+      context: .
     container_name: app-plan-nutricional
     restart: unless-stopped
     networks:
