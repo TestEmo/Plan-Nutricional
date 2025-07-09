@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app-plan-nutricional:
+    build: .
+    container_name: app-plan-nutricional
+    restart: unless-stopped
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    external: true
