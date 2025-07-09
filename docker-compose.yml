@@ -8,17 +8,26 @@ services:
     networks:
       - frontend
 
-    labels:
-      # Habilitar Traefik para este servicio
-      - "traefik.enable=true"
-      # Definir un enrutador HTTP para este servicio
-      - "traefik.http.routers.app-plan-nutricional.entrypoints=websecure" # Usar el entrypoint HTTPS
-      - "traefik.http.routers.app-plan-nutricional.rule=Host(`plansalud.emopruebas.space`)" # La regla de enrutamiento basada en el host
-      # Habilitar TLS con el resolvedor de certificados de Let's Encrypt
-      - "traefik.http.routers.app-plan-nutricional.tls=true"
-      - "traefik.http.routers.app-plan-nutricional.tls.certresolver=le"
-      # Definir el servicio de balanceo de carga y el puerto interno de la aplicación
-      - "traefik.http.services.app-plan-nutricional.loadbalancer.server.port=80" # Asume que tu aplicación escucha en el puerto 80 dentro del contenedor
+    deploy:
+      # La configuración de despliegue es específica para Docker Swarm.
+      mode: replicated
+      replicas: 1 # Puedes escalar el número de réplicas aquí.
+      restart_policy:
+        condition: on-failure
+      labels:
+        # --- Habilitar Traefik y configurar el Router ---
+        - "traefik.enable=true"
+        - "traefik.docker.network=frontend"
+        - "traefik.http.routers.plan-nutricional.rule=Host(`plansalud.emopruebas.space`)"
+        - "traefik.http.routers.plan-nutricional.entrypoints=websecure"
+        
+        # --- Configuración de TLS/SSL ---
+        - "traefik.http.routers.plan-nutricional.tls=true"
+        - "traefik.http.routers.plan-nutricional.tls.certresolver=le"
+
+        # --- Configuración del Servicio ---
+        - "traefik.http.services.plan-nutricional.loadbalancer.server.port=80"
+        # ¡IMPORTANTE! Cambia '80' por el puerto que tu aplicación realmente utiliza.
 
 
 networks:
