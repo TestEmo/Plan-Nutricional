@@ -2,34 +2,29 @@ version: '3.8'
 
 services:
   app-plan-nutricional:
-    build:
-      context: .
-    container_name: app-plan-nutricional
-    restart: unless-stopped
+    image: app-plan-nutricional:latest # Es una buena práctica etiquetar la imagen
+    build: .
     networks:
       - frontend
-
     deploy:
-      # La configuración de despliegue es específica para Docker Swarm.
-      mode: replicated
-      replicas: 1 # Puedes escalar el número de réplicas aquí.
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
       restart_policy:
         condition: on-failure
       labels:
-        # --- Habilitar Traefik y configurar el Router ---
+        # --- Habilitar Traefik ---
         - "traefik.enable=true"
         - "traefik.docker.network=frontend"
+
+        # --- Router HTTP ---
         - "traefik.http.routers.app-plan-nutricional.rule=Host(`plansalud.emopruebas.space`)"
         - "traefik.http.routers.app-plan-nutricional.entrypoints=websecure"
-        
-        # --- Configuración de TLS/SSL ---
-        - "traefik.http.routers.app-plan-nutricional.tls=true"
-        - "traefik.http.routers.app-plan-nutricional.tls.certresolver=le"
+        - "traefik.http.routers.app-plan-nutricional.tls.certresolver=myresolver" # IMPORTANTE: Cambia 'myresolver' por el nombre de tu CertResolver de Let's Encrypt
 
-        # --- Configuración del Servicio ---
+        # --- Servicio ---
         - "traefik.http.services.app-plan-nutricional.loadbalancer.server.port=80"
-        # ¡IMPORTANTE! Cambia '80' por el puerto que tu aplicación realmente utiliza.
-
 
 networks:
   frontend:
