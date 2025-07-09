@@ -8,6 +8,19 @@ services:
     networks:
       - frontend
 
+    labels:
+      # Habilitar Traefik para este servicio
+      - "traefik.enable=true"
+      # Definir un enrutador HTTP para este servicio
+      - "traefik.http.routers.app-plan-nutricional.entrypoints=websecure" # Usar el entrypoint HTTPS
+      - "traefik.http.routers.app-plan-nutricional.rule=Host(`plansalud.emopruebas.space`)" # La regla de enrutamiento basada en el host
+      # Habilitar TLS con el resolvedor de certificados de Let's Encrypt
+      - "traefik.http.routers.app-plan-nutricional.tls=true"
+      - "traefik.http.routers.app-plan-nutricional.tls.certresolver=le"
+      # Definir el servicio de balanceo de carga y el puerto interno de la aplicación
+      - "traefik.http.services.app-plan-nutricional.loadbalancer.server.port=80" # Asume que tu aplicación escucha en el puerto 80 dentro del contenedor
+
+
 networks:
   frontend:
     external: true
